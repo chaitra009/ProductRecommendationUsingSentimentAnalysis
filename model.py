@@ -109,7 +109,9 @@ def normalize_and_lemmaize(input_text):
 
 #Recommend the products based on the sentiment from model
 def recommend_products(user_name):
-    recommend_matrix = pk.load(open('pickle_file/user_final_rating.pkl','rb'))
+    with zipfile.ZipFile('pickle_file/user_final_rating.pkl.zip', 'r') as zip_ref:
+        with zip_ref.open('user_final_rating.pkl') as f:
+            recommend_matrix = pk.load(f) 
     product_list = pd.DataFrame(recommend_matrix.loc[user_name].sort_values(ascending=False)[0:20])
     product_frame = product_df[product_df.name.isin(product_list.index.tolist())]
     output_df = product_frame[['name','reviews_text']]
