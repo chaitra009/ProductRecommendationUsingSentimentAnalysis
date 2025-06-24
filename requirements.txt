@@ -3,3 +3,5 @@ pandas
 scikit-learn
 openai
 numpy
+nltk
+spacy
