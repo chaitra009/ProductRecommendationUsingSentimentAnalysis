@@ -4,6 +4,7 @@ import pandas as pd
 import re, nltk, spacy, string
 import en_core_web_sm
 import pickle as pk
+import zipfile
 
 from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
 from sklearn.ensemble import RandomForestClassifier,GradientBoostingClassifier
@@ -19,8 +20,10 @@ nltk.download('omw-1.4')
 # load the pickle files 
 count_vector = pk.load(open('pickle_file/count_vector.pkl','rb'))            # Count Vectorizer
 tfidf_transformer = pk.load(open('pickle_file/tfidf_transformer.pkl','rb')) # TFIDF Transformer
-model = pk.load(open('pickle_file/model.pkl','rb'))                          # Classification Model
-recommend_matrix = pk.load(open('pickle_file/user_final_rating.pkl','rb'))   # User-User Recommendation System 
+model = pk.load(open('pickle_file/model.pkl','rb'))       
+with zipfile.ZipFile('pickle_file/user_final_rating.pkl.zip', 'r') as zip_ref:
+        with zip_ref.open('user_final_rating.pkl') as f:
+            recommend_matrix = pk.load(f)                   # Classification Model
 
 nlp = spacy.load('en_core_web_sm',disable=['ner','parser'])
 
