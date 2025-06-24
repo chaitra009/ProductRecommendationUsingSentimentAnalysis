@@ -12,7 +12,6 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import LancasterStemmer
 from nltk.stem import WordNetLemmatizer
-nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('omw-1.4')
@@ -100,18 +99,19 @@ def model_predict(text):
     output = model.predict(tfidf_vector)
     return output
 
+def simple_tokenize(text):
+    return re.findall(r'\b\w+\b', text.lower())
+
 def normalize_and_lemmaize(input_text):
     input_text = remove_special_characters(input_text)
-    words = nltk.word_tokenize(input_text)
+    words = simple_tokenize(input_text)
     words = normalize(words)
     lemmas = lemmatize(words)
     return ' '.join(lemmas)
 
 #Recommend the products based on the sentiment from model
 def recommend_products(user_name):
-    with zipfile.ZipFile('pickle_file/user_final_rating.pkl.zip', 'r') as zip_ref:
-        with zip_ref.open('user_final_rating.pkl') as f:
-            recommend_matrix = pk.load(f) 
+    recommend_matrix = pk.load(open('pickle_file/user_final_rating.pkl','rb'))
     product_list = pd.DataFrame(recommend_matrix.loc[user_name].sort_values(ascending=False)[0:20])
     product_frame = product_df[product_df.name.isin(product_list.index.tolist())]
     output_df = product_frame[['name','reviews_text']]
