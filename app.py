@@ -26,6 +26,5 @@ def recommend_top5():
         return render_template('index.html')
 
 if __name__ == '__main__':
-    app.debug=False
-
-    app.run()
+    port = int(os.environ.get("PORT", 5000))  # Use PORT env var if available
+    app.run(host='0.0.0.0', port=port)
